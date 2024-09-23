@@ -59,15 +59,13 @@ namespace Tools
         {
             InitialSetUp(start);
 
-            for (int step = 1; step < rows * columns; step++)
+            Queue<GridState> queue = new Queue<GridState>();
+            queue.Enqueue(gridArray[(int)start.x, (int)start.y]);
+
+            while (queue.Count > 0)
             {
-                foreach (GridState gridStat in gridArray)
-                {
-                    if (gridStat != null && gridStat.visited)
-                    {
-                        ExploreNeighbours(gridStat.x, gridStat.y);
-                    }
-                }
+                GridState current = queue.Dequeue();
+                ExploreNeighbours(current.x, current.y, queue);
             }
         }
 
@@ -79,6 +77,11 @@ namespace Tools
         /// <returns>A list of GridStat representing the path</returns>
         public List<GridState> BuildPath(Vector2 start, Vector2 end)
         {
+            if (!IsReachable((int)end.x, (int)end.y))
+            {
+                return null;  // Early exit if the end point is unreachable
+            }
+
             List<GridState> path = new List<GridState>();
             List<GridState> tempList = new List<GridState>();
 
@@ -105,7 +108,7 @@ namespace Tools
         /// <summary>
         /// Explores the neighbours of a given node and marks them as visited.
         /// </summary>
-        private void ExploreNeighbours(int x, int y)
+        private void ExploreNeighbours(int x, int y, Queue<GridState> queue)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -114,6 +117,7 @@ namespace Tools
                 if (IsInBounds(newX, newY) && !gridArray[newX, newY].visited)
                 {
                     SetVisited(newX, newY);
+                    queue.Enqueue(gridArray[newX, newY]);
                 }
             }
         }
