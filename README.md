@@ -15,3 +15,6 @@ This Unity project demonstrates a basic grid-based movement system using a pathf
 2. **Pathfinding**: The player starts at `StartPos` and finds the path to `EndPos` using a pathfinding algorithm.
 3. **Player Movement**: Once the path is found, the player object moves smoothly along the path until it reaches the destination.
  
+
+https://github.com/user-attachments/assets/c4baa310-032e-45fa-be34-ac76001851c4
+
