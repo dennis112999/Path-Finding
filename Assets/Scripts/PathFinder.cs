@@ -158,13 +158,19 @@ namespace Tools
             float minDistance = float.MaxValue;
             GridState closest = null;
 
-            foreach (GridState gridStat in list)
+            foreach (GridState gridState in list)
             {
-                float distance = Vector3.Distance(targetLocation.position, gridStat.transform.position);
+                // Check if the gridState is null (destroyed) before using it
+                if (gridState == null || gridState.transform == null)
+                {
+                    continue;  // Skip this gridState if it has been destroyed
+                }
+
+                float distance = Vector3.Distance(targetLocation.position, gridState.transform.position);
                 if (distance < minDistance)
                 {
                     minDistance = distance;
-                    closest = gridStat;
+                    closest = gridState;
                 }
             }
 
