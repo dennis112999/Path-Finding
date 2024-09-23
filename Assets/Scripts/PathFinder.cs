@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using PathFinder;
 
 namespace Tools
 {
@@ -8,7 +9,7 @@ namespace Tools
     /// </summary>
     public class PathFinder
     {
-        private GridStat[,] gridArray;
+        private GridState[,] gridArray;
         private int rows, columns;
 
         // Direction vectors for exploring neighbours (up, right, down, left)
@@ -18,7 +19,7 @@ namespace Tools
         /// <summary>
         /// Initializes the PathFinder with a grid and its size.
         /// </summary>
-        public PathFinder(GridStat[,] gridArray, int rows, int columns)
+        public PathFinder(GridState[,] gridArray, int rows, int columns)
         {
             this.gridArray = gridArray;
             this.rows = rows;
@@ -31,7 +32,7 @@ namespace Tools
         /// <param name="start">Starting position</param>
         /// <param name="end">Ending position</param>
         /// <returns>A list of GridStat representing the path</returns>
-        public List<GridStat> FindPath(Vector2 start, Vector2 end)
+        public List<GridState> FindPath(Vector2 start, Vector2 end)
         {
             CalculateVisited(start);
             return BuildPath(start, end);
@@ -43,7 +44,7 @@ namespace Tools
         /// <param name="start">Starting point to mark as visited</param>
         private void InitialSetUp(Vector2 start)
         {
-            foreach (GridStat gridStat in gridArray)
+            foreach (GridState gridStat in gridArray)
             {
                 gridStat.visited = false;
             }
@@ -60,7 +61,7 @@ namespace Tools
 
             for (int step = 1; step < rows * columns; step++)
             {
-                foreach (GridStat gridStat in gridArray)
+                foreach (GridState gridStat in gridArray)
                 {
                     if (gridStat != null && gridStat.visited)
                     {
@@ -76,10 +77,10 @@ namespace Tools
         /// <param name="start">Starting point</param>
         /// <param name="end">Ending point</param>
         /// <returns>A list of GridStat representing the path</returns>
-        public List<GridStat> BuildPath(Vector2 start, Vector2 end)
+        public List<GridState> BuildPath(Vector2 start, Vector2 end)
         {
-            List<GridStat> path = new List<GridStat>();
-            List<GridStat> tempList = new List<GridStat>();
+            List<GridState> path = new List<GridState>();
+            List<GridState> tempList = new List<GridState>();
 
             if (IsReachable((int)end.x, (int)end.y))
             {
@@ -89,7 +90,7 @@ namespace Tools
                 while (!(x == (int)end.x && y == (int)end.y))
                 {
                     AddValidDirections(tempList, x, y);
-                    GridStat next = FindClosest(gridArray[(int)end.x, (int)end.y].transform, tempList);
+                    GridState next = FindClosest(gridArray[(int)end.x, (int)end.y].transform, tempList);
                     path.Add(next);
 
                     x = next.x;
@@ -128,7 +129,7 @@ namespace Tools
         /// <summary>
         /// Adds valid directions (neighbours) for exploration to the list.
         /// </summary>
-        private void AddValidDirections(List<GridStat> tempList, int x, int y)
+        private void AddValidDirections(List<GridState> tempList, int x, int y)
         {
             for (int i = 0; i < 4; i++)
             {
@@ -152,12 +153,12 @@ namespace Tools
         /// <summary>
         /// Finds the closest node to the target location from a list of nodes.
         /// </summary>
-        private GridStat FindClosest(Transform targetLocation, List<GridStat> list)
+        private GridState FindClosest(Transform targetLocation, List<GridState> list)
         {
             float minDistance = float.MaxValue;
-            GridStat closest = null;
+            GridState closest = null;
 
-            foreach (GridStat gridStat in list)
+            foreach (GridState gridStat in list)
             {
                 float distance = Vector3.Distance(targetLocation.position, gridStat.transform.position);
                 if (distance < minDistance)
