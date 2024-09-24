@@ -1,6 +1,6 @@
 # Path-Finding Grid Movement in Unity
 
-This Unity project demonstrates a basic grid-based movement system using a pathfinding algorithm. The player navigates from a starting point to an end point through a grid by following a calculated path.
+This Unity project demonstrates a basic grid-based movement system and A* methdod using a pathfinding algorithm. The player navigates from a starting point to an end point through a grid by following a calculated path.
 
 ## Features
 
