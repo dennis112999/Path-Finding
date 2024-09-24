@@ -32,7 +32,12 @@ namespace PathFinder
         private GameObject _player;
         public float MoveSpeed = 2f;
 
-        private Tools.PathFinder pathFinder;
+        [Header("PathfindingAlgorithm")]
+        private Tools.PathFinderAStar pathFinderAStar;
+        private Tools.PathFinder pathFinderBFS;
+
+        [HideInInspector] public enum PathfindingAlgorithm { AStar, BFS }
+        [HideInInspector] public PathfindingAlgorithm SelectedAlgorithm = PathfindingAlgorithm.AStar;
 
         /// <summary>
         /// Initializes the grid and player position
@@ -49,7 +54,8 @@ namespace PathFinder
             _player = Instantiate(PlayerPrefab, new Vector3(StartPos.x, 0, StartPos.y), Quaternion.identity);
             _player.transform.SetParent(transform, false);
 
-            pathFinder = new Tools.PathFinder(_gridArray, Rows, Columns);
+            pathFinderAStar = new Tools.PathFinderAStar(_gridArray, Rows, Columns);
+            pathFinderBFS = new Tools.PathFinder(_gridArray, Rows, Columns); // Assuming you have PathFinder.cs ready for BFS.
         }
 
         /// <summary>
@@ -58,9 +64,16 @@ namespace PathFinder
         public void ExecutePathfinding()
         {
             if (!Application.isPlaying) return;
-            if (pathFinder == null) return;
 
-            _path = pathFinder.FindPath(StartPos, EndPos);
+            if (SelectedAlgorithm == PathfindingAlgorithm.AStar && pathFinderAStar != null)
+            {
+                _path = pathFinderAStar.FindPath(StartPos, EndPos);
+            }
+            else if (SelectedAlgorithm == PathfindingAlgorithm.BFS && pathFinderBFS != null)
+            {
+                _path = pathFinderBFS.FindPath(StartPos, EndPos); // Assuming BFS returns List<GridState>
+            }
+
             StartCoroutine(MovePlayerAlongPath());
         }
 
